@@ -1,6 +1,146 @@
 # AVA - Advanced Virtual Assistant
 
-A privacy-focused, offline-first desktop assistant for Windows 11.
+A powerful, modular, privacy-focused desktop assistant for Windows 11.
+**No AI models. No cloud APIs. 100% offline-capable. 78 commands.**
+
+[![Tests](https://img.shields.io/badge/tests-121%20passing-brightgreen)]()
+[![Commands](https://img.shields.io/badge/commands-78-blue)]()
+[![Modules](https://img.shields.io/badge/modules-19-purple)]()
+
+## Quick Start
+
+```bash
+git clone https://github.com/zain-archer/AVA.git
+cd AVA
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python -m ava.main
+```
+
+## Features
+
+### Voice & Conversation
+- Offline voice recognition (Vosk) — works with any speaker
+- Local text-to-speech (pyttsx3)
+- Natural greetings, jokes, motivation, fun facts
+- JARVIS-style personality
+
+### PC Control
+- Volume up/down/mute
+- Screen brightness
+- Screenshot
+- Clipboard reader
+- Lock/sleep PC
+- Window management (minimize, maximize, focus)
+
+### System Info
+- Battery status with time remaining
+- Disk/CPU/RAM monitoring
+- System dashboard
+- Uptime and processes
+
+### Productivity
+- Calculator (including bare expressions: "2 plus 3")
+- Timers with notifications
+- Notes and to-do lists (persistent)
+- File and folder navigation
+
+### Web & Research
+- 8 search engines
+- Page research and summarization
+- Word definitions
+- Weather (free API)
+- News headlines (RSS)
+- GitHub repository search and inspection
+
+### Developer Tools
+- Run Python scripts
+- Read files with line numbers
+- Git status and log
+- Lines of code counter
+
+### Skills System
+- 10 built-in skills
+- Skill discovery and info
+- Modular plugin architecture
+
+## Example Commands
+
+```
+"hi"                    → Hey there! How can I help?
+"battery"               → Battery: 87% — on battery (3h 20m left)
+"open vscode"           → Opens Visual Studio Code
+"calculate 25 * 4"      → 100
+"2 plus 3"              → 5 (bare expression!)
+"weather London"        → Live weather from wttr.in
+"news"                  → Top headlines
+"search github python"  → Top Python repos
+"set timer 5 minutes"   → Countdown with notification
+"tell me a joke"        → Random joke
+"motivate me"           → Inspirational quote
+"fun fact"              → Random trivia
+"skills"                → List all available skills
+"count lines"           → Lines of code in project
+```
+
+## Architecture
+
+```
+ava/
+├── main.py              # Entry point
+├── core/                # Engine, permissions, config, network
+── voice/               # Recognizer, speaker
+├── ui/                  # Sidebar
+├── commands/            # 19 command modules
+│   ├── calculator.py
+│   ├── conversation.py
+│   ├── system_monitor.py
+│   ├── apps.py
+│   ├── web_search.py
+│   ├── pc_control.py
+│   ├── notes.py
+│   ├── timer.py
+│   ├── window_manager.py
+│   ├── weather.py
+│   ├── ip_lookup.py
+│   ├── research.py
+│   ├── news.py
+│   ├── personality.py
+│   ├── github_explorer.py
+│   ├── skills.py
+│   ├── dev_tools.py
+│   ├── folders.py
+│   └── system_commands.py
+└── models/              # Vosk speech models (download separately)
+```
+
+## Privacy & Security
+
+- No AI models or cloud APIs
+- No data uploaded to remote services
+- Voice audio never leaves your machine
+- Three-tier permission system (SAFE/CONFIRM/DENIED)
+- Dangerous actions blocked by default
+- All history and config stays local
+
+## Requirements
+
+- Windows 11 (64-bit)
+- Python 3.8+
+- Microphone (optional, for voice)
+- Internet (optional, for web features)
+
+## Storage
+
+- Core app: ~5 MB
+- Dependencies: ~15 MB
+- Vosk model (optional): ~50 MB
+- **Total: ~70 MB** (well under your 256 GB SSD)
+
+## License
+
+MIT — see LICENSE file.
 
 ## Features (Phase 1)
 
