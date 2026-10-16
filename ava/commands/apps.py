@@ -402,7 +402,17 @@ def _cmd_open(context: Dict[str, Any]) -> "CommandResult":
                 message=f"Could not find {app_info['name']}. Is it installed?"
             )
     
-    # Priority 3: Suggest what's available
+    # Priority 3: If it looks like a URL, open it in the browser
+    if '.' in target and ('.' in target.split('/')[-1] or '://' in target or target.endswith('.com')
+                          or target.endswith('.org') or target.endswith('.net')):
+        url = target if '://' in target else f"https://{target}"
+        try:
+            webbrowser.open(url)
+            return CommandResult(success=True, message=f"Opened: {url}")
+        except Exception:
+            pass
+    
+    # Priority 4: Suggest what's available
     popular_apps = ["vscode", "chrome", "spotify", "discord", "notepad", "firefox", "zoom", "steam"]
     popular_folders = ["downloads", "desktop", "documents", "pictures"]
     

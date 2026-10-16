@@ -61,11 +61,12 @@ def register_commands(command_engine) -> None:
     )
     
     # --- HELP COMMAND ---
+    # Note: "what can you do" is handled by personality module for a friendlier response
     command_engine.register_command(
         name="help",
         description="List available commands",
-        patterns=["help", "commands", "what can you do", "how to use",
-                   "show commands", "list commands"],
+        patterns=["help", "commands", "how to use",
+                   "show commands", "list commands", "show all commands"],
         handler=_cmd_help,
         permission_level=PermissionLevel.SAFE,
         category="system",
