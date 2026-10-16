@@ -116,7 +116,8 @@ class AVA:
         from ava.commands import (
             system_commands, conversation, calculator,
             system_monitor, folders, web_search, apps, timer,
-            pc_control, notes, window_manager, ip_lookup, weather
+            pc_control, notes, window_manager, ip_lookup, weather,
+            research, news, personality
         )
         
         system_commands.register_commands(self.command_engine)
@@ -132,6 +133,9 @@ class AVA:
         window_manager.register_commands(self.command_engine)
         ip_lookup.register_commands(self.command_engine)
         weather.register_commands(self.command_engine)
+        research.register_commands(self.command_engine)
+        news.register_commands(self.command_engine)
+        personality.register_commands(self.command_engine)
         
         # Register calculator as a fallback (catches bare math like "2 plus 3")
         self.command_engine.register_fallback(calculator.try_calculate)
