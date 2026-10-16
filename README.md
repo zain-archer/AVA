@@ -1,128 +1,95 @@
 # AVA - Advanced Virtual Assistant
 
-A privacy-focused, offline-first desktop assistant for Windows 11.
+**78 → 94 commands | 121 → 143 tests | 6 PRs merged**
 
-## Features (Phase 1)
+A powerful, modular, privacy-focused desktop assistant for Windows 11.
+**No AI models. No cloud APIs. 100% offline-capable.**
 
-- ✅ Compact floating sidebar UI
-- ✅ Offline voice recognition (Vosk) - works with any speaker
-- ✅ Local text-to-speech responses
-- ✅ Text input with conversation history
-- ✅ Online/offline status detection
-- ✅ Deterministic command system
-- ✅ Basic commands: open applications, system info
-- ✅ Permission system (SAFE/CONFIRM/DENIED)
-- ✅ Comprehensive logging
+## Quick Start
 
-## Installation
-
-### Prerequisites
-
-- Windows 11 64-bit
-- Python 3.8 or higher
-- Microphone for voice input
-
-### Setup Steps
-
-1. **Install Python dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Download Vosk speech recognition model:**
-   ```bash
-   # Create models directory
-   mkdir models
-   
-   # Download English model (small, ~50 MB)
-   # Visit: https://alphacephei.com/vosk/models
-   # Download "vosk-model-small-en-us-0.15" and extract to models/
-   
-   # OR download Urdu model (~50 MB)
-   # Download "vosk-model-small-ur-0.1" and extract to models/
-   ```
-
-3. **Run AVA:**
-   ```bash
-   python -m ava.main
-   ```
-
-## Usage
-
-### Voice Commands
-- Click the microphone icon or press the configured hotkey
-- Speak clearly in English or Urdu
-- AVA displays recognized text before executing
-
-### Text Input
-- Type commands in the text field
-- Press Enter to execute
-
-### Basic Commands
-- "open notepad" - Opens Notepad
-- "system info" - Shows system information
-- "what's the time" - Displays current time
-- "status" - Shows AVA status
-- "help" - Lists available commands
-- "exit" or "quit" - Closes AVA
-
-### Permissions
-AVA uses three permission levels:
-- **SAFE**: Read-only operations (system info, time)
-- **CONFIRM**: Requires approval (opening apps, file operations)
-- **DENIED**: Never allowed (credential access, destructive actions)
-
-## Architecture
-
-```
-ava/
-├── __init__.py
-├── main.py              # Application entry point
-├── ui/
-│   ├── __init__.py
-│   └── sidebar.py       # Compact sidebar interface
-├── core/
-│   ├── __init__.py
-│   ├── command_engine.py    # Command registry and execution
-│   ├── permissions.py       # Permission system
-│   └── config.py           # Configuration management
-├── voice/
-│   ├── __init__.py
-│   ├── recognizer.py        # Voice input (Vosk)
-│   └── speaker.py           # Voice output (pyttsx3)
-├── commands/
-│   ├── __init__.py
-│   ├── system_commands.py   # System info commands
-│   └── app_commands.py      # Application launching
-├── models/                  # Vosk speech models
-└── logs/                    # Execution logs
+```bash
+git clone https://github.com/zain-archer/AVA.git
+cd AVA
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python -m ava.main
 ```
 
-## Offline Capability
+## Feature Categories (94 commands)
 
-AVA works completely offline:
-- Voice recognition runs locally via Vosk
-- Speech responses use local TTS engine
-- Commands execute without internet
-- No data sent to external services
+| Category | Commands | Examples |
+|----------|----------|----------|
+| **conversation** | 20 | hi, hello, who are you, thanks, bye, lol, wow, i love you, boot |
+| **system** | 13 | time, battery, disk, cpu, dashboard, ip, help, exit |
+| **pc_control** | 12 | volume, brightness, screenshot, clipboard, minimize, lock |
+| **web** | 9 | search google, research, define, weather, news, github search |
+| **notes** | 7 | note, notes, todo, todos, done |
+| **dev** | 6 | run python, read file, git status, count lines |
+| **davinci** | 5 | resolve status, resolve info, new project |
+| **fun** | 5 | joke, coin flip, dice roll, random number, fact |
+| **tools** | 6 | calculator, timer, tip, convert |
+| **skills** | 3 | skills list, skill info, propose skill |
+| **calendar** | 3 | event, today, events |
+| **files** | 2 | list files, where am i |
+| **media** | 2 | play music, open media |
+| **applications** | 1 | open (unified — 30+ apps + 11 folders + URLs) |
 
-## Next Phases
+## What's New
 
-- **Phase 2**: Advanced PC automation, window management
-- **Phase 3**: Browser automation and web research
-- **Phase 4**: GitHub integration and skill discovery
-- **Phase 5**: Developer toolkit
-- **Phase 6**: DaVinci Resolve integration
-- **Phase 7**: Hardening and optimization
+### Phase 6: DaVinci Resolve Integration
+- Detect Resolve installation and scripting API
+- Show current project, timeline, and track info
+- List all projects in database
+- Create new projects (with confirmation)
 
-## Privacy
+### Phase 7: JARVIS Upgrades
+- **Unit converter**: "5 km in miles", "100 celsius to fahrenheit"
+- **Calendar**: "event on Friday meeting at 3pm", "today", "events"
+- **Media player**: "play music lofi", "open spotify", "open netflix"
+- **Boot sequence**: "boot" → JARVIS-style greeting with system status
+- **Enhanced personality**: praise, acknowledgment, identity responses
+
+## Example Commands
+
+```
+"hi"                    → Hey there! How can I help?
+"boot"                  → Good morning, sir. All systems operational.
+"battery"               → Battery: 87% — on battery (3h 20m left)
+"dashboard"             → Full system overview
+"open vscode"           → Opens Visual Studio Code
+"calculate 25 * 4"      → 100
+"5 km in miles"         → 3.11 miles
+"event on Friday 3pm"   → Added: team meeting on Friday
+"today"                 → Today's schedule
+"play music lofi"       → Opens YouTube search
+"resolve status"        → DaVinci Resolve: installed, connected
+"weather London"        → Live weather from wttr.in
+"news"                  → Top headlines from RSS
+"search github python"  → Top Python repos
+"set timer 5 minutes"   → Countdown with notification
+"tell me a joke"        → Random joke
+"skills"                → List all available skills
+"count lines"           → Lines of code in project
+```
+
+## Privacy & Security
 
 - No AI models or cloud APIs
-- No mandatory internet connection
-- No voice biometrics or speaker identification
-- All data remains local
-- No credentials stored in plaintext
+- No data uploaded to remote services
+- Voice audio never leaves your machine
+- Three-tier permission system (SAFE/CONFIRM/DENIED)
+- Dangerous actions blocked by default
+- All history and config stays local
+
+## Requirements
+
+- Windows 11 (64-bit)
+- Python 3.8+
+- Microphone (optional, for voice)
+- Internet (optional, for web features)
+- DaVinci Resolve (optional, for Resolve commands)
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT — see LICENSE file.
