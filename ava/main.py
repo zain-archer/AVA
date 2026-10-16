@@ -117,7 +117,8 @@ class AVA:
             system_commands, conversation, calculator,
             system_monitor, folders, web_search, apps, timer,
             pc_control, notes, window_manager, ip_lookup, weather,
-            research, news, personality, github_explorer, skills, dev_tools
+            research, news, personality, github_explorer, skills, dev_tools,
+            davinci_resolve, converter, identity, calendar, media
         )
         
         system_commands.register_commands(self.command_engine)
@@ -139,6 +140,11 @@ class AVA:
         github_explorer.register_commands(self.command_engine)
         skills.register_commands(self.command_engine)
         dev_tools.register_commands(self.command_engine)
+        davinci_resolve.register_commands(self.command_engine)
+        converter.register_commands(self.command_engine)
+        identity.register_commands(self.command_engine)
+        calendar.register_commands(self.command_engine)
+        media.register_commands(self.command_engine)
         
         # Register calculator as a fallback (catches bare math like "2 plus 3")
         self.command_engine.register_fallback(calculator.try_calculate)
