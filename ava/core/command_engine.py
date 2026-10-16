@@ -62,7 +62,16 @@ class CommandEngine:
         self._permission_manager = permission_manager
         self._command_history: List[Tuple[str, CommandResult]] = []
         self._max_history = 100
+        self._fallbacks: List[Callable[[str], Optional["CommandResult"]]] = []
         logger.info("Command engine initialized")
+    
+    def register_fallback(self, handler: Callable[[str], Optional["CommandResult"]]) -> None:
+        """
+        Register a fallback handler. Called when no command matches.
+        Handler takes raw text, returns CommandResult or None.
+        Used for smart features like auto-calculator.
+        """
+        self._fallbacks.append(handler)
     
     def _normalize(self, text: str) -> str:
         """
@@ -219,6 +228,16 @@ class CommandEngine:
         command = self.match_command(text)
         
         if not command:
+            # Try fallback handlers (e.g., auto-calculator for "2 plus 3")
+            for fallback in self._fallbacks:
+                try:
+                    fallback_result = fallback(text)
+                    if fallback_result is not None:
+                        self._add_to_history(text, fallback_result)
+                        return fallback_result
+                except Exception:
+                    continue
+            
             result = CommandResult(
                 success=False,
                 message=f"I don't understand '{text}'. Type 'help' for available commands."

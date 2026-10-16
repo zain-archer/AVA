@@ -113,11 +113,28 @@ class AVA:
     
     def _register_commands(self):
         """Register all command handlers."""
-        from ava.commands import system_commands, app_commands, conversation
+        from ava.commands import (
+            system_commands, conversation, calculator,
+            system_monitor, folders, web_search, apps, timer,
+            pc_control, notes, window_manager, ip_lookup, weather
+        )
         
         system_commands.register_commands(self.command_engine)
-        app_commands.register_commands(self.command_engine)
         conversation.register_commands(self.command_engine)
+        calculator.register_commands(self.command_engine)
+        system_monitor.register_commands(self.command_engine)
+        folders.register_commands(self.command_engine)
+        web_search.register_commands(self.command_engine)
+        apps.register_commands(self.command_engine)
+        timer.register_commands(self.command_engine)
+        pc_control.register_commands(self.command_engine)
+        notes.register_commands(self.command_engine)
+        window_manager.register_commands(self.command_engine)
+        ip_lookup.register_commands(self.command_engine)
+        weather.register_commands(self.command_engine)
+        
+        # Register calculator as a fallback (catches bare math like "2 plus 3")
+        self.command_engine.register_fallback(calculator.try_calculate)
         
         logger.info(f"Registered {len(self.command_engine.get_all_commands())} commands")
     

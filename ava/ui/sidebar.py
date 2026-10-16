@@ -193,7 +193,7 @@ class SidebarUI:
                                         font=("Segoe UI", 10, "italic"))
         
         # Welcome message
-        self._add_message("system", "AVA is ready. Type a command or click 🎤 to speak.")
+        self._add_message("system", "AVA is online. Say 'hi' to chat, 'help' for commands, or click 🎤 to speak.")
     
     def _build_input_panel(self):
         """Build the text input and voice control panel."""
