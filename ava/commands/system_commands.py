@@ -73,14 +73,16 @@ def register_commands(command_engine) -> None:
     )
     
     # --- EXIT COMMAND ---
+    # Note: "bye" and "goodbye" are handled by the farewell command (conversational).
+    # Only explicit exit words close AVA.
     command_engine.register_command(
         name="exit",
         description="Close AVA",
-        patterns=["exit", "quit", "close", "shut down", "goodbye", "bye"],
+        patterns=["exit", "quit", "close", "shut down", "shutdown", "power off", "turn off"],
         handler=_cmd_exit,
         permission_level=PermissionLevel.SAFE,
         category="system",
-        help_text="Closes AVA."
+        help_text="Closes AVA. (Say 'bye' for a friendly goodbye without closing.)"
     )
 
 
@@ -148,29 +150,39 @@ def _cmd_help(context: Dict[str, Any]) -> "CommandResult":
     """Show help text."""
     from ava.core.command_engine import CommandResult
     
-    help_text = (
-        "Available Commands:\n"
-        "\n"
-        "[SYSTEM]\n"
-        "  • time: Shows current date and time\n"
-        "    Try: \"what time is it\"\n"
-        "  • system_info: Shows computer information\n"
-        "    Try: \"system info\"\n"
-        "  • status: Shows AVA status\n"
-        "    Try: \"status\"\n"
-        "\n"
-        "[APPLICATIONS]\n"
-        "  • open_app: Opens installed applications\n"
-        "    Try: \"open notepad\", \"open calculator\"\n"
-        "\n"
-        "[GENERAL]\n"
-        "  • help: Shows this help message\n"
-        "    Try: \"help\"\n"
-        "  • exit: Closes AVA\n"
-        "    Try: \"exit\"\n"
-        "\n"
-        "Tip: You can speak commands or type them in the text field."
-    )
+    # Build help dynamically from registered commands
+    help_text = "Available Commands:\n\n"
+    
+    # Group by category
+    categories = {}
+    for cmd in context.get("all_commands", []):
+        if cmd.category not in categories:
+            categories[cmd.category] = []
+        categories[cmd.category].append(cmd)
+    
+    if not categories and context.get("command_engine"):
+        # Fallback: get commands from engine
+        for cmd in context["command_engine"].get_all_commands():
+            if cmd.category not in categories:
+                categories[cmd.category] = []
+            categories[cmd.category].append(cmd)
+    
+    category_order = ["conversation", "system", "applications", "fun", "general"]
+    
+    for category in category_order:
+        if category not in categories:
+            continue
+        help_text += f"[{category.upper()}]\n"
+        for cmd in sorted(categories[category], key=lambda c: c.name):
+            # Show first couple of patterns as examples
+            examples = ", ".join(f'"{p}"' for p in cmd.patterns[:3])
+            help_text += f"  • {cmd.name}: {cmd.description}\n"
+            help_text += f"    Try: {examples}\n"
+        help_text += "\n"
+    
+    help_text += "Tip: You can speak commands or type them in the text field.\n"
+    help_text += "Tip: Say 'hi', 'hello', or 'good morning' to chat!"
+    
     return CommandResult(success=True, message=help_text)
 
 

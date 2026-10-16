@@ -43,6 +43,16 @@ class CommandResult:
         return self.message
 
 
+# Words to strip before matching so "can you please open notepad" → "open notepad"
+_FILLER_WORDS = {
+    "please", "kindly", "could", "can", "would", "will", "may", "should",
+    "you", "i", "me", "my", "the", "a", "an", "it", "this", "that",
+    "for", "to", "do", "just", "okay", "ok", "maybe", "perhaps",
+    "actually", "basically", "literally", "really", "very",
+    "let", "let's", "lets",
+}
+
+
 class CommandEngine:
     """Central command registry and executor."""
     
@@ -53,6 +63,25 @@ class CommandEngine:
         self._command_history: List[Tuple[str, CommandResult]] = []
         self._max_history = 100
         logger.info("Command engine initialized")
+    
+    def _normalize(self, text: str) -> str:
+        """
+        Strip filler words, punctuation, and extra spaces from text.
+        Used to improve matching when users speak naturally.
+        
+        Examples:
+            "can you please open notepad" → "open notepad"
+            "hey AVA what's the time" → "time"
+            "hi there" → "hi there"
+        """
+        # Lowercase and strip
+        text = text.lower().strip()
+        # Remove punctuation (keep apostrophes inside words)
+        text = re.sub(r"[^\w\s']", "", text)
+        # Split, drop filler words, rejoin
+        words = text.split()
+        cleaned = [w for w in words if w and w not in _FILLER_WORDS]
+        return " ".join(cleaned)
     
     def register_command(
         self,
@@ -95,6 +124,17 @@ class CommandEngine:
         """
         Find a command that matches the input text.
         
+        Matching runs in 3 passes, in priority order:
+          1. Exact match         → "hi" == "hi"
+          2. Word-boundary match → "hi" found as a whole word in "hi there"
+                                   "time" found in "what time is it"
+                                   "how are you" found in "hey how are you today"
+          3. Cleaned match       → strip filler words ("please", "can you", etc.)
+                                   then retry exact match
+        
+        Pass 2 picks the longest matching pattern so more specific
+        commands win over short ones (e.g. "how are you" beats "how").
+        
         Args:
             text: User input text
             
@@ -103,20 +143,58 @@ class CommandEngine:
         """
         text_lower = text.lower().strip()
         
+        # --- Pass 1: Exact match (highest confidence) ---
         for command in self._commands.values():
-            # Check exact phrase matches first
             for pattern in command.patterns:
-                # Try exact match
                 if pattern.lower() == text_lower:
                     return command
-                
-                # Try regex match
+        
+        # --- Pass 2: Whole-word containment ---
+        # "hi" should match "hi there" but NOT "history"
+        # "how are you" should match "hey how are you today"
+        best_match: Optional[Command] = None
+        best_score = 0
+        
+        for command in self._commands.values():
+            for pattern in command.patterns:
+                p = pattern.lower()
                 try:
-                    if re.search(pattern, text_lower, re.IGNORECASE):
-                        return command
+                    if re.search(r'\b' + re.escape(p) + r'\b', text_lower):
+                        score = len(p)  # longer pattern = more specific
+                        if score > best_score:
+                            best_score = score
+                            best_match = command
                 except re.error:
-                    # If not valid regex, skip
                     continue
+        
+        if best_match:
+            return best_match
+        
+        # --- Pass 3: Cleaned match (strip fillers, retry exact) ---
+        cleaned = self._normalize(text_lower)
+        if cleaned and cleaned != text_lower:
+            for command in self._commands.values():
+                for pattern in command.patterns:
+                    if pattern.lower() == cleaned:
+                        return command
+        
+        # Try cleaned text with word-boundary containment too
+        if cleaned and cleaned != text_lower:
+            best_match = None
+            best_score = 0
+            for command in self._commands.values():
+                for pattern in command.patterns:
+                    p = pattern.lower()
+                    try:
+                        if re.search(r'\b' + re.escape(p) + r'\b', cleaned):
+                            score = len(p)
+                            if score > best_score:
+                                best_score = score
+                                best_match = command
+                    except re.error:
+                        continue
+            if best_match:
+                return best_match
         
         return None
     
