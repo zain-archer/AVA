@@ -1,0 +1,15 @@
+# AVA - Advanced Virtual Assistant - Phase 1 Dependencies
+# Install with: pip install -r requirements.txt
+
+# Voice recognition - offline, speaker-independent
+vosk==0.3.45
+pyaudio==0.2.14
+
+# Text-to-speech - offline, local voices
+pyttsx3==2.90
+
+# System utilities
+psutil==5.9.6
+
+# Optional: for better audio handling
+numpy==1.24.3

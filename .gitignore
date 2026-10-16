@@ -1,0 +1,41 @@
+# AVA - Advanced Virtual Assistant
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# AVA-specific
+ava/logs/
+*.log
+ava/models/
+!ava/models/.gitkeep
+
+# Configuration (user-specific)
+# Don't commit user config
+# config.json
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
