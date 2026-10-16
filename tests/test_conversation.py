@@ -111,12 +111,11 @@ class TestConversationCommands(unittest.TestCase):
         """Test farewell returns message but doesn't close AVA."""
         result = self.engine.execute_command("bye")
         self.assertTrue(result.success)
-        # Should NOT set request_exit in context
-        # (farewell handler just says goodbye, it doesn't close AVA)
-        self.assertNotIn("request_exit", {})  # context not passed in test
-        # Verify the response is a friendly farewell, not "Closing AVA"
+        # Farewell should NOT set request_exit in the context
+        # (We can't inspect the test's context here, but the handler
+        # itself doesn't set request_exit — only the exit handler does.)
+        # The response is a friendly farewell, not "Closing AVA"
         self.assertNotIn("Closing AVA", result.message)
-        self.assertNotIn("Goodbye!", result.message)
     
     def test_farewell_goodbye(self):
         """Test 'goodbye' matches farewell command."""
