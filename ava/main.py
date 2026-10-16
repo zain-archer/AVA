@@ -105,16 +105,19 @@ class AVA:
         self._context = {
             "voice_available": self.recognizer.is_available(),
             "tts_available": self.speaker.is_available(),
+            "command_engine": self.command_engine,
+            "all_commands": self.command_engine.get_all_commands(),
         }
         
         logger.info("AVA initialized successfully")
     
     def _register_commands(self):
         """Register all command handlers."""
-        from ava.commands import system_commands, app_commands
+        from ava.commands import system_commands, app_commands, conversation
         
         system_commands.register_commands(self.command_engine)
         app_commands.register_commands(self.command_engine)
+        conversation.register_commands(self.command_engine)
         
         logger.info(f"Registered {len(self.command_engine.get_all_commands())} commands")
     
